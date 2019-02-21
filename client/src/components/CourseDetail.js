@@ -41,6 +41,7 @@ class CourseDetail extends Component {
           materialsNeeded: response.data.materialsNeeded,
           title: response.data.title,
           course: response.data,
+          userId: response.data.user._id,
           userFirstName: response.data.user.firstName,
           userLastName: response.data.user.lastName,
           userFullName: `${response.data.user.firstName} ${response.data.user.lastName}`
@@ -50,42 +51,15 @@ class CourseDetail extends Component {
   }
 
 
-  displayDescription = () => {
-    const descriptions = this.state.description;
-    if (descriptions) {
-      const descriptionSplited = descriptions.split("\n\n");
-      const descriptionDisplayed = descriptionSplited.map(description => <p>{description}</p>);
-      return descriptionDisplayed;
-    } else {
-      return "";
-    }
-  }
-
-  displayMaterials = () => {
-    const materials = this.state.materialsNeeded;
-    if (materials) {
-      const materialSplited = materials.split("\n");
-      const materialDisplayed = materialSplited.map(material => {
-        if (material) {
-          return <li>{ material.replace("* ", "") }</li>
-        }
-      });
-      return materialDisplayed;
-    } else {
-      return "";
-    }
-  }
-
-
   deleteCourse = () => {
 
-    const email = localStorage.getItem('emailAddress');
-    const mdp = localStorage.getItem('password');
+    const emailAddress = localStorage.getItem('emailAddress');
+    const password = localStorage.getItem('password');
 
     axios.delete(`http://localhost:5000/api/courses/${this.state.courseId}`, {
       auth: {
-        username: email,
-        password: mdp
+        username: emailAddress,
+        password: password
       }
     }).then(function (response) {
       console.log(response);
@@ -98,14 +72,11 @@ class CourseDetail extends Component {
 
 
 
-
-
   render() {
 
     if (this.state.courseDeleted === true) {
       return <Redirect to="/" />
     }
-
 
     const description = this.state.description;
     const materialsNeeded = this.state.materialsNeeded;
@@ -116,9 +87,11 @@ class CourseDetail extends Component {
         <div>
           <div className="actions--bar">
             <div className="bounds">
-              <div className="grid-100"><span>
-                <a className="button" href={`/courses/${this.state.courseId}/update`}>Update Course</a>
+              <div className="grid-100">
+                {localStorage.getItem('loggedUserId') === this.state.userId ?
+                <span><a className="button" href={`/courses/${this.state.courseId}/update`}>Update Course</a>
                 <a className="button" onClick={this.deleteCourse}>Delete Course</a></span>
+                : null}
                 <a className="button button-secondary" href="/">Return to List</a></div>
             </div>
           </div>
@@ -132,7 +105,6 @@ class CourseDetail extends Component {
               <p>By {this.state.userFullName}</p>
             </div>
             <div id="description" className="course--description">
-              {this.displayDescription()}
               <ReactMarkdown
                 source={description}
                 escapeHtml={false}
@@ -149,13 +121,10 @@ class CourseDetail extends Component {
                 </li>
                 <li className="course--stats--list--item">
                   <h4>Materials Needed</h4>
-                  <ul>
-                    {this.displayMaterials()}
                     <ReactMarkdown
                       source={materialsNeeded}
                       escapeHtml={false}
                     />
-                  </ul>
                 </li>
               </ul>
             </div>

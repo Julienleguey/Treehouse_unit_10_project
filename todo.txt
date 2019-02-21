@@ -1,13 +1,8 @@
 todo list:
 
 
-Restrict access to updating and deleting courses
-On the "Course Detail" screen, add rendering logic so that the "Update Course" and "Delete Course" buttons only display if:
-There's an authenticated user.
-And the authenticated user's ID matches that of the user who owns the course.
-
 redirect après avoir sign up, sign in (je ne sais pas s'il faut faire ça)
-Add support for rendering markdown formatted text
+
 
 
 test how to install the project (with npm install, and where) and to run it (npm start)

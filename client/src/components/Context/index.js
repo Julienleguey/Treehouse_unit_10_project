@@ -8,6 +8,7 @@ export class Provider extends Component {
   constructor() {
     super();
     this.state = {
+      loggedUserId: "",
       emailAddress: "",
       password: "",
       firstName: "",
@@ -27,11 +28,13 @@ export class Provider extends Component {
       this.setState({
         emailAddress: emailAddress,
         password: password,
+        loggedUserId: response.data._id,
         firstName: response.data.firstName,
         lastName: response.data.lastName
       });
       localStorage.setItem('emailAddress', this.state.emailAddress);
       localStorage.setItem('password', this.state.password);
+      localStorage.setItem('loggedUserId', this.state.loggedUserId);
     }).catch(error => {
       console.log(error.response.data.message);
       // console.log(error);
