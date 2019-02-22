@@ -38,7 +38,7 @@ class App extends Component {
             <PrivateRoute exact path="/courses/create" component={CreateCourse} />
             <PrivateRoute exact path="/courses/:id/update" component={UpdateCourse} />
 
-            <Route exact path="/courses/:id" render={ () => <CourseDetail location={this.props.location} /> }/>
+            <Route exact path="/courses/:id" render={ () => <CourseDetail /> }/>
             <Route exact path="/signup" render={ () => <UserSignUp /> } />
             <Route exact path="/signin" render={ () => <UserSignIn /> } />
             <Route exact path="/signout" render={ () => <UserSignOut /> } />

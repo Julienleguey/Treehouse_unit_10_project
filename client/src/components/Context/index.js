@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import { withRouter } from 'react-router-dom';
 const UserContext = React.createContext();
 
 export class Provider extends Component {
@@ -17,6 +17,8 @@ export class Provider extends Component {
       isError: false
     };
   }
+
+
 
   signin = (emailAddress, password) => {axios.get(`http://localhost:5000/api/users`, {
       auth: {
@@ -37,7 +39,6 @@ export class Provider extends Component {
       localStorage.setItem('loggedUserId', this.state.loggedUserId);
     }).catch(error => {
       console.log(error.response.data.message);
-      // console.log(error);
       this.setState({
         errorMessage: error.response.data.message,
         isError: true
@@ -50,6 +51,7 @@ export class Provider extends Component {
     this.setState({
       emailAddress: "",
       password: "",
+      loggedUserId: "",
       firstName: "",
       lastName: ""
     });
@@ -85,4 +87,4 @@ export class Provider extends Component {
   }
 }
 
-export const Consumer = UserContext.Consumer;
+export const Consumer = withRouter(UserContext.Consumer);

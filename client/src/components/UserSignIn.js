@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { Consumer } from './Context';
 
 
@@ -14,11 +14,15 @@ class UserSignIn extends Component {
   }
 
 
+
   cancel = (e) => {
     e.preventDefault();
     console.log("cancellation");
     this.setState({redirectToHomePage: true});
   }
+
+
+
 
   render() {
 
@@ -34,9 +38,12 @@ class UserSignIn extends Component {
             <Consumer>
               { context => {
 
+
                 const signin = (e) => {
                   e.preventDefault();
                   context.actions.signin(e.target.emailAddress.value, e.target.password.value);
+                  console.log(this.props.location.state.from.pathname);
+                  this.props.history.push(this.props.location.state.from.pathname);
                 }
 
                 if (context.emailAddress) {
@@ -82,4 +89,4 @@ class UserSignIn extends Component {
   }
 }
 
-export default UserSignIn;
+export default withRouter(UserSignIn);

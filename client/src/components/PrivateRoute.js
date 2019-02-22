@@ -5,15 +5,14 @@ import {
 } from 'react-router-dom';
 
 
-console.log(localStorage.getItem('emailAddress'));
-
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={ props => localStorage.getItem('emailAddress'
       ) ? (
         <Component {...props} />
       ) : (
-        <Redirect to="/signin" />
+        <Redirect to={{ pathname: "/signin", state: { from: props.location }}} />
+        // <Redirect to="/signin" />
       )
     }
   />
