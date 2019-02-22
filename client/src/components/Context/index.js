@@ -11,6 +11,8 @@ export class Provider extends Component {
       loggedUserId: "",
       emailAddress: "",
       password: "",
+      redirectToPrevPage: false,
+      prevPage: "",
       firstName: "",
       lastName: "",
       errorMessage: "",

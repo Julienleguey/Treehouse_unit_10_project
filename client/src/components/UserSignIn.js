@@ -9,10 +9,24 @@ class UserSignIn extends Component {
   constructor() {
     super();
     this.state = {
-      redirectToHomePage: false
+      redirectToHomePage: false,
+      prevPage: "",
+      redirectToPrevPage: false
+
     };
   }
 
+  componentDidMount() {
+    this.setState({ prevPage: this.props.location.state.from.pathname });
+    console.log(this.state.prevPage);
+  }
+
+  // componentDidUpdate() {
+  //   if (this.state.redirectToPrevPage === true) {
+  //     // return <Redirect to={`${this.state.prevPage}`} />
+  //     window.location.href=this.state.prevPage;
+  //   }
+  // }
 
 
   cancel = (e) => {
@@ -38,12 +52,21 @@ class UserSignIn extends Component {
             <Consumer>
               { context => {
 
+                // if (this.state.redirectToPrevPage === true) {
+                //   // return <Redirect to={`${this.state.prevPage}`} />
+                //   return <Redirect to="/bla"/>
+                // }
+
 
                 const signin = (e) => {
                   e.preventDefault();
                   context.actions.signin(e.target.emailAddress.value, e.target.password.value);
-                  console.log(this.props.location.state.from.pathname);
-                  this.props.history.push(this.props.location.state.from.pathname);
+                  { window.location.href=this.state.prevPage; }
+                  // console.log(this.state.prevPage);
+                  // this.context.history.push(this.state.prevPage);
+                  // this.setState({redirectToPrevPage: true});
+
+
                 }
 
                 if (context.emailAddress) {
