@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { withRouter } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 const UserContext = React.createContext();
 
 export class Provider extends Component {
@@ -12,7 +12,6 @@ export class Provider extends Component {
       emailAddress: "",
       password: "",
       redirectToPrevPage: false,
-      prevPage: "",
       firstName: "",
       lastName: "",
       errorMessage: "",
@@ -22,13 +21,13 @@ export class Provider extends Component {
 
 
 
-  signin = (emailAddress, password) => {axios.get(`http://localhost:5000/api/users`, {
+  signin = (emailAddress, password, redirectToPrevPage) => {axios.get(`http://localhost:5000/api/users`, {
       auth: {
         username: emailAddress,
         password: password
       }
     }).then( response => {
-      console.log('Authenticated');
+      console.log("authenticated from index");
       this.setState({
         emailAddress: emailAddress,
         password: password,
@@ -39,6 +38,11 @@ export class Provider extends Component {
       localStorage.setItem('emailAddress', this.state.emailAddress);
       localStorage.setItem('password', this.state.password);
       localStorage.setItem('loggedUserId', this.state.loggedUserId);
+    }).then( () => {
+      this.setState({
+        redirectToPrevPage: redirectToPrevPage
+      });
+      console.log("state mis à jour dans index (context)");
     }).catch(error => {
       console.log(error.response.data.message);
       this.setState({
@@ -53,6 +57,7 @@ export class Provider extends Component {
     this.setState({
       emailAddress: "",
       password: "",
+      redirectToPrevPage: false,
       loggedUserId: "",
       firstName: "",
       lastName: ""
@@ -65,7 +70,7 @@ export class Provider extends Component {
     const emailAddress = localStorage.getItem('emailAddress');
     const password = localStorage.getItem('password');
     if (emailAddress) {
-      this.signin(emailAddress, password);
+      this.signin(emailAddress, password, false);
     }
   }
 
@@ -74,6 +79,7 @@ export class Provider extends Component {
       <UserContext.Provider value={{
         emailAddress: this.state.emailAddress,
         password: this.state.password,
+        redirectToPrevPage: this.state.redirectToPrevPage,
         firstName: this.state.firstName,
         lastName: this.state.lastName,
         errorMessage: this.state.errorMessage,
@@ -89,4 +95,4 @@ export class Provider extends Component {
   }
 }
 
-export const Consumer = withRouter(UserContext.Consumer);
+export const Consumer = UserContext.Consumer;

@@ -10,23 +10,12 @@ class UserSignIn extends Component {
     super();
     this.state = {
       redirectToHomePage: false,
-      prevPage: "",
-      redirectToPrevPage: false
+      prevPage: "/",
+      emailAddress: "julien@gmail.com",
+      password: "truc"
 
     };
   }
-
-  componentDidMount() {
-    this.setState({ prevPage: this.props.location.state.from.pathname });
-    console.log(this.state.prevPage);
-  }
-
-  // componentDidUpdate() {
-  //   if (this.state.redirectToPrevPage === true) {
-  //     // return <Redirect to={`${this.state.prevPage}`} />
-  //     window.location.href=this.state.prevPage;
-  //   }
-  // }
 
 
   cancel = (e) => {
@@ -37,12 +26,7 @@ class UserSignIn extends Component {
 
 
 
-
   render() {
-
-    if (this.state.redirectToHomePage === true) {
-      return <Redirect to="/" />
-    }
 
     return (
       <div className="bounds">
@@ -52,22 +36,43 @@ class UserSignIn extends Component {
             <Consumer>
               { context => {
 
-                // if (this.state.redirectToPrevPage === true) {
-                //   // return <Redirect to={`${this.state.prevPage}`} />
-                //   return <Redirect to="/bla"/>
-                // }
+                if (this.state.redirectToHomePage === true) {
+                  return <Redirect to="/" />
+                }
+
+                if (context.redirectToPrevPage === true) {
+                  console.log("sign in is finished and we know it");
+                  console.log(context.redirectToPrevPage);
+                  console.log(this.state.prevPage);
+
+
+                  if (this.state.prevPage === "/") {
+                    console.log("using goBack");
+                    this.props.history.goBack();
+                  } else {
+                    console.log("using push");
+                    console.log(this.state.prevPage);
+                    this.props.history.push(this.state.prevPage);
+                  }
+
+                } else {
+                  console.log("sign in is not finished");
+                  console.log(context.redirectToPrevPage);
+                }
 
 
                 const signin = (e) => {
                   e.preventDefault();
-                  context.actions.signin(e.target.emailAddress.value, e.target.password.value);
-                  { window.location.href=this.state.prevPage; }
-                  // console.log(this.state.prevPage);
-                  // this.context.history.push(this.state.prevPage);
-                  // this.setState({redirectToPrevPage: true});
 
+                  if (this.props.location.state) {
+                    this.setState({ prevPage: this.props.location.state.from.pathname });
+                    console.log("prevPage mis à jour dans UserSignIn");
+                  }
+
+                  context.actions.signin(e.target.emailAddress.value, e.target.password.value, true);
 
                 }
+
 
                 if (context.emailAddress) {
                   return (

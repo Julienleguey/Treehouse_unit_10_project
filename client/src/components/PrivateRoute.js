@@ -12,7 +12,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
         <Component {...props} />
       ) : (
         <Redirect to={{ pathname: "/signin", state: { from: props.location }}} />
-        // <Redirect to="/signin" />
       )
     }
   />
@@ -20,5 +19,3 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 );
 
 export default PrivateRoute;
-
-// state: { from: props.location } // ça doit servir à renvoyer après s'être loggé à l'url qu'on voulait atteindre avant de logger

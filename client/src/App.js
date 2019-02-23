@@ -26,13 +26,17 @@ class App extends Component {
 
   render() {
 
+
     return (
+
       <BrowserRouter>
+
         <div>
           <Route path="/" render={ () => <Header /> } />
 
 
           <Switch>
+
             <Route exact path="/" render={ () => <Courses /> }/>
 
             <PrivateRoute exact path="/courses/create" component={CreateCourse} />
@@ -40,12 +44,18 @@ class App extends Component {
 
             <Route exact path="/courses/:id" render={ () => <CourseDetail /> }/>
             <Route exact path="/signup" render={ () => <UserSignUp /> } />
-            <Route exact path="/signin" render={ () => <UserSignIn /> } />
+            <Route exact path="/signin" render={ () => <UserSignIn /> } /> {/* */}
+            {/* <Route exact path={{ pathname: "/signin", state: { from: props.location }}} render={ () => <UserSignIn /> } />
+            <Route exact path="/signin" render={ props => <Redirect to={{ pathname: "/signin", state: { from: props.location }}} /> } />*/}
             <Route exact path="/signout" render={ () => <UserSignOut /> } />
+            <Route path="*" render={ () => <Redirect to="/woopsie" /> }/>
+
           </Switch>
 
         </div>
+
       </BrowserRouter>
+
     );
   }
 }
