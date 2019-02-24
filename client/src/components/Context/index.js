@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Redirect, withRouter } from 'react-router-dom';
 const UserContext = React.createContext();
 
 export class Provider extends Component {

@@ -1,9 +1,25 @@
 todo list:
 
 
-redirect après avoir sign up, sign in (je ne sais pas s'il faut faire ça)
 
 
+remplacer tous les state qui renvoie true quand on veut redirect et utiliser plutôt this.props.history.push() lorsque c'est possible
+(pas possible pour le redirect de signin probablement (enfin, on l'utilise déjà, mais il faut garder le flag dans context))
+Ca nettoierait les render et ça éliminerait peut-être Warning caca...
+("index.js:1446 Warning: Cannot update during an existing state transition (such as within `render`). Render methods should be a pure function of props and state.")
+
+signin method devrait être post dans le formulaire pour ne pas passer email et mdp dans l'url
+
+Il y a un warning quand on signout
+
+dans CoursesDetails, le Delete button est un button et la souris quand on hover ne change pas de forme comme pour les autres liens
+(on pourrait en faire un lien vers "/" ? à la place du history.push ?)
+
+Persists the authenticated user's information (including their password) in the global state. (avec react context api, si c'est possible)
+
+Est-ce qu'on est obligé de garder les errormessage de signin et signup dans context ? On peut pas les prendre dans this.state ?
+
+/error quand err.status===500
 
 test how to install the project (with npm install, and where) and to run it (npm start)
 check that the database is okay (elle se crée si elle n'existe pas, je crois, c'est ça ?)

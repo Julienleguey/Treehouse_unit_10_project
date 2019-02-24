@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -13,10 +13,7 @@ class CreateCourse extends Component {
       estimatedTime: "",
       materialsNeeded: "",
       isError: false,
-      errorMessage: [],
-      courseCreated: false,
-      headersLocation: "",
-      redirectToHomePage: false
+      errorMessage: []
     };
   }
 
@@ -38,18 +35,18 @@ class CreateCourse extends Component {
         username: emailAddress,
         password: password
       },
-      responseType: 'json'
-    }).then( response =>
-      this.setState({
-        courseCreated: true,
-        headersLocation: response.headers.location
-      })
-    ).catch( error => {
-      console.log(error.response.data.message);
-      this.setState({
-        isError: true,
-        errorMessage: error.response.data.message
-      })
+    }).then( response => {
+        this.props.history.push(response.headers.location);
+    }).catch( error => {
+      console.log(error.response.status);
+      if (error.response.status === 400) {
+        this.setState({
+          isError: true,
+          errorMessage: error.response.data.message
+        });
+      } else {
+        this.props.history.push("/error");
+      }
     })
   }
 
@@ -60,12 +57,12 @@ class CreateCourse extends Component {
 
   cancel = (e) => {
     e.preventDefault();
-    this.setState({redirectToHomePage: true});
+    this.props.history.push("/");
   }
 
   displayErrors = () => {
     const errorsInArray = this.state.errorMessage;
-    const errorsDisplayed = errorsInArray.map(error => <li>{error}</li>);
+    const errorsDisplayed = errorsInArray.map(error => <li key={ error.toString() } >{ error }</li>);
     return errorsDisplayed;
   }
 
@@ -73,14 +70,6 @@ class CreateCourse extends Component {
 
 
   render() {
-
-    if (this.state.courseCreated === true) {
-      return <Redirect to={this.state.headersLocation} />
-    }
-
-    if (this.state.redirectToHomePage === true) {
-      return <Redirect to="/" />
-    }
 
 
     return (
@@ -138,4 +127,4 @@ class CreateCourse extends Component {
 }
 
 
-export default CreateCourse;
+export default withRouter(CreateCourse);

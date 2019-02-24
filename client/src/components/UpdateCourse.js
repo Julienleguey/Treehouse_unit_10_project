@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
 
 import axios from 'axios';
-import { Link, Route, Redirect, withRouter } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 
 class UpdateCourse extends Component {
 
   constructor() {
     super();
     this.state = {
+      courseId: "",
       title: "",
       description: "",
       estimatedTime: "",
       materialsNeeded: "",
+      userId: "",
+      userFirstName: "",
+      userLastName: "",
+      userFullName: "",
       isError: false,
       errorMessage: [],
-      redirectToCourseDetail: false
+      redirectToCourseDetail: false,
+      notFound: false,
+      forbidden: false
     };
   }
 
@@ -25,20 +32,25 @@ class UpdateCourse extends Component {
     console.log(id);
 
     axios.get(`http://localhost:5000/api/courses/${id}`)
-      .then(response =>
-        this.setState({
-          all: response.data,
-          courseId: id,
-          description: response.data.description,
-          estimatedTime: response.data.estimatedTime,
-          materialsNeeded: response.data.materialsNeeded,
-          title: response.data.title,
-          course: response.data,
-          userFirstName: response.data.user.firstName,
-          userLastName: response.data.user.lastName,
-          userFullName: `${response.data.user.firstName} ${response.data.user.lastName}`
+      .then( response => {
+          this.setState({
+            courseId: id,
+            title: response.data.title,
+            description: response.data.description,
+            estimatedTime: response.data.estimatedTime,
+            materialsNeeded: response.data.materialsNeeded,
+            userId: response.data.user._id,
+            userFirstName: response.data.user.firstName,
+            userLastName: response.data.user.lastName,
+            userFullName: `${response.data.user.firstName} ${response.data.user.lastName}`
+          });
+        }).then( () => {
+            if (this.state.userId !== localStorage.getItem('loggedUserId') ) {
+              this.props.history.push("/forbidden");
+            }
+        }).catch ( error => {
+          this.props.history.push("/notfound");
         })
-      );
   }
 
 
@@ -60,13 +72,18 @@ class UpdateCourse extends Component {
         password: password
       }
     }).then( () => {
-      this.setState({redirectToCourseDetail: true})
+      this.props.history.push(`/courses/${this.state.courseId}`);
     }).catch(error => {
-      console.log(error.response.data.message);
-      this.setState({
-        isError: true,
-        errorMessage: error.response.data.message
-      })
+      console.log(error.response.status);
+      // ajouter un if pour ne faire cette erreur que dans le cas d'une mauvaise update
+      if (error.response.status === 400 ) {
+        this.setState({
+          isError: true,
+          errorMessage: error.response.data.message
+        });
+      } else {
+        this.props.history.push("/error");
+      }
     })
   }
 
@@ -77,20 +94,16 @@ class UpdateCourse extends Component {
 
   cancel = (e) => {
     e.preventDefault();
-    this.setState({redirectToCourseDetail: true});
+    this.props.history.push(`/courses/${this.state.courseId}`)
   }
 
   displayErrors = () => {
     const errorsInArray = this.state.errorMessage;
-    const errorsDisplayed = errorsInArray.map(error => <li>{error}</li>);
+    const errorsDisplayed = errorsInArray.map(error => <li key={ error.toString() } >{ error }</li>);
     return errorsDisplayed;
   }
 
   render() {
-
-    if (this.state.redirectToCourseDetail === true) {
-      return <Redirect to={`/courses/${this.state.courseId}`} />
-    }
 
     return(
       <div className="bounds course--detail">
@@ -141,12 +154,7 @@ class UpdateCourse extends Component {
           </form>
         </div>
       </div>
-
-
     );
-
-
-
   }
 }
 

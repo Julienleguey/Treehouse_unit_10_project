@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
-import { withRouter } from 'react-router-dom';
 
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import ReactMarkdown from 'react-markdown';
-
 
 
 class CourseDetail extends Component {
@@ -22,8 +20,7 @@ class CourseDetail extends Component {
       course: "",
       userFirstName: "",
       userLastName: "",
-      userFullName: "",
-      courseDeleted: false
+      userFullName: ""
     };
   }
 
@@ -32,7 +29,7 @@ class CourseDetail extends Component {
     const id = this.props.match.params.id;
 
     axios.get(`http://localhost:5000/api/courses/${id}`)
-      .then(response =>
+      .then(response => {
         this.setState({
           all: response.data,
           courseId: id,
@@ -45,8 +42,16 @@ class CourseDetail extends Component {
           userFirstName: response.data.user.firstName,
           userLastName: response.data.user.lastName,
           userFullName: `${response.data.user.firstName} ${response.data.user.lastName}`
-        })
-      );
+        });
+      }).catch( error => {
+        console.log(error.response.status);
+        if (error.response.status === 500) {
+          this.props.history.push("/error");
+        } else {
+          this.props.history.push("/notfound");
+        }
+
+      })
 
   }
 
@@ -61,12 +66,14 @@ class CourseDetail extends Component {
         username: emailAddress,
         password: password
       }
-    }).then(function (response) {
-      console.log(response);
     }).then( () => {
-      this.setState({ courseDeleted: true })
-    }).catch(function (error) {
-      console.log(error);
+      this.props.history.push("/");
+    }).catch( error => {
+      if (error.response.status === 500) {
+        this.props.history.push("/error");
+      } else {
+        this.props.history.push("/notfound");
+      }
     })
   }
 
@@ -74,25 +81,20 @@ class CourseDetail extends Component {
 
   render() {
 
-    if (this.state.courseDeleted === true) {
-      return <Redirect to="/" />
-    }
-
-    const description = this.state.description;
-    const materialsNeeded = this.state.materialsNeeded;
-
-
     return (
       <div>
         <div>
           <div className="actions--bar">
             <div className="bounds">
               <div className="grid-100">
-                {localStorage.getItem('loggedUserId') === this.state.userId ?
-                <span><a className="button" href={`/courses/${this.state.courseId}/update`}>Update Course</a>
-                <a className="button" onClick={this.deleteCourse}>Delete Course</a></span>
-                : null}
-                <a className="button button-secondary" href="/">Return to List</a></div>
+                {/*  {localStorage.getItem('loggedUserId') === this.state.userId ? */}
+                <span>
+                  <Link className="button" to={`/courses/${this.state.courseId}/update`}>Update Course</Link>
+                  <button className="button" onClick={this.deleteCourse}>Delete Course</button>
+                </span>
+                {/* : null} */}
+                 <Link className="button button-secondary" to="/">Return to List</Link>
+              </div>
             </div>
           </div>
         </div>
@@ -106,7 +108,7 @@ class CourseDetail extends Component {
             </div>
             <div id="description" className="course--description">
               <ReactMarkdown
-                source={description}
+                source={this.state.description}
                 escapeHtml={false}
               />
 
@@ -122,7 +124,7 @@ class CourseDetail extends Component {
                 <li className="course--stats--list--item">
                   <h4>Materials Needed</h4>
                     <ReactMarkdown
-                      source={materialsNeeded}
+                      source={this.state.materialsNeeded}
                       escapeHtml={false}
                     />
                 </li>
@@ -130,7 +132,6 @@ class CourseDetail extends Component {
             </div>
           </div>
         </div>
-
       </div>
     );
   }

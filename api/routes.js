@@ -150,9 +150,13 @@ router.get('/courses/:id', function(req, res, next){
   Course.findById(id)
           .populate({ path: 'user', select: ["firstName", "lastName"]})
           .exec(function(err, course) {
-            if (err) return next(err);
-            res.status(200);
-            res.json(course);
+            if (err) {
+              err.status = 404;
+              return next(err);
+            } else {
+              res.status(200);
+              res.json(course);
+            }
           });
 });
 

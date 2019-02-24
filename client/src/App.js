@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import {
   BrowserRouter,
   Route,
-  Switch,
-  Redirect,
-  withRouter
+  Switch
 } from 'react-router-dom';
 import './App.css';
 import './css/global.css';
@@ -20,6 +18,9 @@ import UserSignOut from './components/UserSignOut';
 import PrivateRoute from './components/PrivateRoute';
 import CreateCourse from './components/CreateCourse';
 import UpdateCourse from './components/UpdateCourse';
+import NotFound from './components/NotFound';
+import Forbidden from './components/Forbidden';
+import UnhandledError from './components/UnhandledError';
 
 
 class App extends Component {
@@ -45,10 +46,14 @@ class App extends Component {
             <Route exact path="/courses/:id" render={ () => <CourseDetail /> }/>
             <Route exact path="/signup" render={ () => <UserSignUp /> } />
             <Route exact path="/signin" render={ () => <UserSignIn /> } /> {/* */}
-            {/* <Route exact path={{ pathname: "/signin", state: { from: props.location }}} render={ () => <UserSignIn /> } />
-            <Route exact path="/signin" render={ props => <Redirect to={{ pathname: "/signin", state: { from: props.location }}} /> } />*/}
             <Route exact path="/signout" render={ () => <UserSignOut /> } />
-            <Route path="*" render={ () => <Redirect to="/woopsie" /> }/>
+            <Route exact path="/notfound" render={ () => <NotFound /> } />
+
+            <Route exact path="/notfound" render={ () => <NotFound /> } />
+            <Route exact path="/forbidden" render={ () => <Forbidden /> } />
+            <Route exact path="/error" render={ () => <UnhandledError /> } />
+
+            <Route path="*" render={ () => <NotFound /> }/>
 
           </Switch>
 

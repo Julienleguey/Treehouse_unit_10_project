@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 class Courses extends Component {
@@ -12,20 +12,25 @@ class Courses extends Component {
   }
 
   componentDidMount() {
-    //installe et utilise axios et arrête de t'embêter
     axios.get(`http://localhost:5000/api/courses`)
-      .then(response =>
+      .then(response => {
         this.setState({
           courses: response.data
-        })
-      );
+        });
+      }).catch( error => {
+        console.log(error.response.status);
+        if (error.response.status === 500) {
+          this.props.history.push("/error");
+        }
+      })
   }
 
 
   displayCourses = () => {
     const courses = this.state.courses;
     const coursesDisplayed = courses.map(course =>
-      <div className="grid-33"><a className="course--module course--link" href={`/courses/${ course._id }`}>
+      <div className="grid-33" key={ course._id} >
+        <a className="course--module course--link" href={`/courses/${ course._id }`}>
           <h4 className="course--label">Course</h4>
           <h3 className="course--title">{ course.title }</h3>
         </a>
@@ -40,12 +45,14 @@ class Courses extends Component {
     return(
       <div>
         {this.displayCourses()}
-        <div className="grid-33"><a className="course--module course--add--module" href="/courses/create">
+        <div className="grid-33">
+          <a className="course--module course--add--module" href="/courses/create">
             <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 viewBox="0 0 13 13" className="add">
                 <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>
               </svg>New Course</h3>
-          </a></div>
+          </a>
+        </div>
       </div>
     );
 
@@ -54,4 +61,4 @@ class Courses extends Component {
 }
 
 
-export default Courses;
+export default withRouter(Courses);
