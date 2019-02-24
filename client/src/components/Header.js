@@ -5,7 +5,7 @@ import { Consumer } from './Context';
 const Header = () => (
   <div className="header">
     <div className="bounds">
-      <h1 className="header--logo"><a href="/">Courses</a></h1>
+      <h1 className="header--logo"><Link to="/">Courses</Link></h1>
       <Consumer>
         { context => (
           <nav>

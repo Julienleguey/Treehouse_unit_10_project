@@ -73,7 +73,6 @@ class Provider extends Component {
   signout = () => {
     Promise.resolve()
       .then( () => {
-      //If I were able to kept this state every time a page is loaded, that this.setState would be usefull
       this.setState({
         loggedUserId: "",
         emailAddress: "",
@@ -110,6 +109,7 @@ class Provider extends Component {
         }
       }}>
         { this.props.children }
+
       </UserContext.Provider>
     );
   }

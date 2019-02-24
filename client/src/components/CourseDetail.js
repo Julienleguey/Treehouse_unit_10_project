@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { Consumer } from './Context';
 import axios from 'axios';
 
-// import ReactDOM from 'react-dom';
+
 import ReactMarkdown from 'react-markdown';
 
 
@@ -56,10 +57,7 @@ class CourseDetail extends Component {
   }
 
 
-  deleteCourse = () => {
-
-    const emailAddress = localStorage.getItem('emailAddress');
-    const password = localStorage.getItem('password');
+  deleteCourse = (emailAddress, password) => {
 
     axios.delete(`http://localhost:5000/api/courses/${this.state.courseId}`, {
       auth: {
@@ -87,13 +85,19 @@ class CourseDetail extends Component {
           <div className="actions--bar">
             <div className="bounds">
               <div className="grid-100">
-                {/*  {localStorage.getItem('loggedUserId') === this.state.userId ? */}
-                <span>
-                  <Link className="button" to={`/courses/${this.state.courseId}/update`}>Update Course</Link>
-                  <button className="button" onClick={this.deleteCourse} >Delete Course</button>
-                </span>
-                {/* : null} */}
-                 <Link className="button button-secondary" to="/">Return to List</Link>
+                  <Consumer>
+                    { context => {
+                      if (context.loggedUserId === this.state.userId) {
+                        return (
+                          <span>
+                            <Link className="button" to={`/courses/${this.state.courseId}/update`}>Update Course</Link>
+                            <button className="button" onClick={ () => this.deleteCourse(context.emailAddress, context.password)} >Delete Course</button>
+                          </span>
+                        );
+                      }
+                    }}
+                  </Consumer>
+                <Link className="button button-secondary" to="/">Return to List</Link>
               </div>
             </div>
           </div>
