@@ -90,7 +90,7 @@ class CourseDetail extends Component {
                 {/*  {localStorage.getItem('loggedUserId') === this.state.userId ? */}
                 <span>
                   <Link className="button" to={`/courses/${this.state.courseId}/update`}>Update Course</Link>
-                  <button className="button" onClick={this.deleteCourse}>Delete Course</button>
+                  <button className="button" onClick={this.deleteCourse} >Delete Course</button>
                 </span>
                 {/* : null} */}
                  <Link className="button button-secondary" to="/">Return to List</Link>

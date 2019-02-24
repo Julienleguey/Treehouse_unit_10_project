@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 const UserContext = React.createContext();
 
-export class Provider extends Component {
+class Provider extends Component {
 
   constructor() {
     super();
@@ -10,58 +11,13 @@ export class Provider extends Component {
       loggedUserId: "",
       emailAddress: "",
       password: "",
-      redirectToPrevPage: false,
+      readyRedirect: false,
+      prevPage: "/",
       firstName: "",
       lastName: "",
-      errorMessage: "",
-      isError: false
+      errorMessageSignIn: "",
+      isErrorSignIn: false
     };
-  }
-
-
-
-  signin = (emailAddress, password, redirectToPrevPage) => {axios.get(`http://localhost:5000/api/users`, {
-      auth: {
-        username: emailAddress,
-        password: password
-      }
-    }).then( response => {
-      console.log("authenticated from index");
-      this.setState({
-        emailAddress: emailAddress,
-        password: password,
-        loggedUserId: response.data._id,
-        firstName: response.data.firstName,
-        lastName: response.data.lastName
-      });
-      localStorage.setItem('emailAddress', this.state.emailAddress);
-      localStorage.setItem('password', this.state.password);
-      localStorage.setItem('loggedUserId', this.state.loggedUserId);
-    }).then( () => {
-      this.setState({
-        redirectToPrevPage: redirectToPrevPage
-      });
-      console.log("state mis à jour dans index (context)");
-    }).catch(error => {
-      console.log(error.response.data.message);
-      this.setState({
-        errorMessage: error.response.data.message,
-        isError: true
-      });
-    });
-  }
-
-
-  signout = () => {
-    this.setState({
-      emailAddress: "",
-      password: "",
-      redirectToPrevPage: false,
-      loggedUserId: "",
-      firstName: "",
-      lastName: ""
-    });
-    localStorage.clear();
   }
 
 
@@ -69,20 +25,85 @@ export class Provider extends Component {
     const emailAddress = localStorage.getItem('emailAddress');
     const password = localStorage.getItem('password');
     if (emailAddress) {
-      this.signin(emailAddress, password, false);
+      this.signin(emailAddress, password, false, "/");
     }
   }
+
+
+  signin = (emailAddress, password, readyRedirect, prevPage) => {
+    axios.get(`http://localhost:5000/api/users`, {
+      auth: {
+        username: emailAddress,
+        password: password
+      }
+    }).then( response => {
+      this.setState({
+        emailAddress: emailAddress,
+        password: password,
+        loggedUserId: response.data._id,
+        readyRedirect: readyRedirect,
+        prevPage: prevPage,
+        firstName: response.data.firstName,
+        lastName: response.data.lastName
+      });
+      localStorage.setItem('emailAddress', this.state.emailAddress);
+      localStorage.setItem('password', this.state.password);
+      localStorage.setItem('loggedUserId', this.state.loggedUserId);
+    }).then( () => {
+      if (this.state.readyRedirect) {
+        if (this.state.prevPage === "/") {
+          this.props.history.goBack();
+        } else {
+          this.props.history.push(this.state.prevPage);
+        }
+      }
+    }).catch(error => {
+      if (error.response.status === 500) {
+        this.props.history.push("/error");
+      } else {
+        this.setState({
+          errorMessageSignIn: error.response.data.message,
+          isErrorSignIn: true
+        });
+      }
+    });
+  }
+
+
+  signout = () => {
+    Promise.resolve()
+      .then( () => {
+      //If I were able to kept this state every time a page is loaded, that this.setState would be usefull
+      this.setState({
+        loggedUserId: "",
+        emailAddress: "",
+        password: "",
+        readyRedirect: false,
+        prevPage: "/",
+        firstName: "",
+        lastName: "",
+        errorMessageSignIn: "",
+        isErrorSignIn: false
+      });
+      localStorage.clear();
+    }).then( () => {
+      this.props.history.push("/");
+    })
+  }
+
 
   render() {
     return(
       <UserContext.Provider value={{
+        loggedUserId: this.state.loggedUserId,
         emailAddress: this.state.emailAddress,
         password: this.state.password,
-        redirectToPrevPage: this.state.redirectToPrevPage,
+        readyRedirect: this.state.readyRedirect,
+        prevPage: this.state.prevPage,
         firstName: this.state.firstName,
         lastName: this.state.lastName,
-        errorMessage: this.state.errorMessage,
-        isError: this.state.isError,
+        errorMessageSignIn: this.state.errorMessageSignIn,
+        isErrorSignIn: this.state.isErrorSignIn,
         actions: {
           signin: this.signin,
           signout: this.signout
@@ -94,4 +115,5 @@ export class Provider extends Component {
   }
 }
 
+export default withRouter(Provider);
 export const Consumer = UserContext.Consumer;

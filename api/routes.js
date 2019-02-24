@@ -73,11 +73,14 @@ Routes
 
 
 //200 - Returns the currently authenticated user
+
 router.get('/users', authenticateUser, function(req, res){
   const user = req.currentUser;
   res.json(user);
 });
-/**/
+ /**/
+
+
 
 // 201 - Creates a user, sets the Location header to "/", and returns no content
 // regex from: https://emailregex.com/

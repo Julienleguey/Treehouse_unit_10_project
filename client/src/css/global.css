@@ -292,6 +292,11 @@ a {
   transition: color 0.2s;
 }
 
+/* For the Delete Button to look exactly like the Update button (which is a link) */
+button {
+  cursor: pointer;
+}
+
 /* line 66, ../sass/global.sass */
 p {
   font-family: "Cousine";

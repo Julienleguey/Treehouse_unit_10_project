@@ -15,6 +15,13 @@ class UserSignIn extends Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.location.state) {
+      this.setState({ prevPage: this.props.location.state.from.pathname });
+    }
+  }
+
+
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value});
   }
@@ -24,7 +31,6 @@ class UserSignIn extends Component {
     e.preventDefault();
     this.props.history.push("/");
   }
-
 
 
   render() {
@@ -37,36 +43,10 @@ class UserSignIn extends Component {
             <Consumer>
               { context => {
 
-                  if (context.redirectToPrevPage === true) {
-                  console.log("sign in is finished and we know it");
-                  console.log(context.redirectToPrevPage);
-                  console.log(this.state.prevPage);
-
-                  if (this.state.prevPage === "/") {
-                    console.log("using goBack");
-                    this.props.history.goBack();
-                  } else {
-                    console.log("using push");
-                    console.log(this.state.prevPage);
-                    this.props.history.push(this.state.prevPage);
-                  }
-
-                } else {
-                  console.log("sign in is not finished");
-                  console.log(context.redirectToPrevPage);
-                }
-
-
                 const signin = (e) => {
                   e.preventDefault();
 
-                  if (this.props.location.state) {
-                    this.setState({ prevPage: this.props.location.state.from.pathname });
-                    console.log("prevPage mis à jour dans UserSignIn");
-                  }
-
-                  context.actions.signin(this.state.emailAddress, this.state.password, true);
-
+                  context.actions.signin(this.state.emailAddress, this.state.password, true, this.state.prevPage);
                 }
 
 
@@ -77,26 +57,25 @@ class UserSignIn extends Component {
                     </div>
                   );
                 } else {
-                  return(
+                  return (
                     <>
-
-                    {context.isError ?
-                      <div>
-                        <h2 class="validation--errors--label">Validation errors</h2>
-                        <div class="validation-errors">
-                          <p>{context.errorMessage}</p>
+                      {context.isErrorSignIn?
+                        <div>
+                          <h2 className="validation--errors--label">Validation errors</h2>
+                          <div className="validation-errors">
+                            <p>{context.errorMessageSignIn}</p>
+                          </div>
                         </div>
-                      </div>
-                    : null }
+                      : null }
 
-                    <form method="post" onSubmit={signin}>
-                      <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" value={this.state.emailAddress} onChange={this.handleChange} /></div>
-                      <div><input id="password" name="password" type="password" className="" placeholder="Password" value={this.state.password} onChange={this.handleChange} /></div>
-                      <div className="grid-100 pad-bottom">
-                        <button className="button" type="submit">Sign In</button>
-                        <button className="button button-secondary" onClick={this.cancel}>Cancel</button>
-                      </div>
-                    </form>
+                      <form method="post" onSubmit={signin}>
+                        <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" value={this.state.emailAddress} onChange={this.handleChange} /></div>
+                        <div><input id="password" name="password" type="password" className="" placeholder="Password" value={this.state.password} onChange={this.handleChange} /></div>
+                        <div className="grid-100 pad-bottom">
+                          <button className="button" type="submit">Sign In</button>
+                          <button className="button button-secondary" onClick={this.cancel}>Cancel</button>
+                        </div>
+                      </form>
                     </>
                   );
                 }

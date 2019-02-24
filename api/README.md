@@ -1,5 +1,3 @@
-# treehouse_unit_9_project
-
 Features :
 1. Getting a user infos (only for the authenticated user)
 2. Adding new users to the database {"firstName", "lastName", "emailAddress" and "password" are required}

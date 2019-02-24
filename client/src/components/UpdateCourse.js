@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import axios from 'axios';
-import { Link, Redirect, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 class UpdateCourse extends Component {
 
@@ -74,8 +74,6 @@ class UpdateCourse extends Component {
     }).then( () => {
       this.props.history.push(`/courses/${this.state.courseId}`);
     }).catch(error => {
-      console.log(error.response.status);
-      // ajouter un if pour ne faire cette erreur que dans le cas d'une mauvaise update
       if (error.response.status === 400 ) {
         this.setState({
           isError: true,

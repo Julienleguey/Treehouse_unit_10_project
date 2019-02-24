@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Consumer } from './Context';
 
 const Header = () => (
@@ -7,13 +8,14 @@ const Header = () => (
       <h1 className="header--logo"><a href="/">Courses</a></h1>
       <Consumer>
         { context => (
-          <nav><span>Welcome{context.emailAddress === "" ? "" : ` ${context.firstName} ${context.lastName}` }!</span>
-          { context.emailAddress !== "" ?
-              <a className="signout" href="/signout">Sign Out</a>
-              :
-              <a className="signout" href="/signin">Sign In</a>
-          }
-        </nav>
+          <nav>
+            <span>Welcome{context.emailAddress === "" ? "" : ` ${context.firstName} ${context.lastName}` }!</span>
+            { context.emailAddress !== "" ?
+                <Link className="signout" to="/signout">Sign Out</Link>
+                :
+                <Link className="signout" to="/signin">Sign In</Link>
+            }
+          </nav>
         )}
       </Consumer>
     </div>
