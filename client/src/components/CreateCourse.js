@@ -18,7 +18,8 @@ class CreateCourse extends Component {
     };
   }
 
-
+  // method to create a course (post)
+  // the user has to be authenticated to perform this action
   createCourse = (e, emailAddress, password) => {
 
     e.preventDefault();
@@ -36,7 +37,6 @@ class CreateCourse extends Component {
     }).then( response => {
         this.props.history.push(response.headers.location);
     }).catch( error => {
-      console.log(error.response.status);
       if (error.response.status === 400) {
         this.setState({
           isError: true,
@@ -48,15 +48,21 @@ class CreateCourse extends Component {
     })
   }
 
+
+  // when the user change the text in the form, the state is updated with the corresponding input
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value});
   }
 
+
+  // method for the cancel button (redirect to the default page)
   cancel = (e) => {
     e.preventDefault();
     this.props.history.push("/");
   }
 
+
+  // method to display the error messages while creating a course
   displayErrors = () => {
     const errorsInArray = this.state.errorMessage;
     const errorsDisplayed = errorsInArray.map(error => <li key={ error.toString() } >{ error }</li>);
@@ -65,9 +71,7 @@ class CreateCourse extends Component {
 
 
 
-
   render() {
-
 
     return (
       <div className="bounds course--detail">
@@ -135,7 +139,6 @@ class CreateCourse extends Component {
       </div>
     );
   }
-
 }
 
 

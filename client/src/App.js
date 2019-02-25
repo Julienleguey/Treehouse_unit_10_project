@@ -41,7 +41,7 @@ class App extends Component {
 
             <Route exact path="/courses/:id" render={ () => <CourseDetail /> }/>
             <Route exact path="/signup" render={ () => <UserSignUp /> } />
-            <Route exact path="/signin" render={ () => <UserSignIn /> } /> {/* */}
+            <Route exact path="/signin" render={ () => <UserSignIn /> } />
             <Route exact path="/signout" render={ () => <UserSignOut /> } />
             <Route exact path="/notfound" render={ () => <NotFound /> } />
 

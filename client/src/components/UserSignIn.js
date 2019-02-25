@@ -15,22 +15,26 @@ class UserSignIn extends Component {
     };
   }
 
+  // if the user has been redirected to the sign in page, the location (s)he tried to access is stored
+  // after (s)he successfully signed in, the user can be redirected to it
   componentDidMount() {
     if (this.props.location.state) {
       this.setState({ prevPage: this.props.location.state.from.pathname });
     }
   }
 
-
+  // when the user change the text in the form, the state is updated with the corresponding input
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value});
   }
 
 
+  // method for the cancel button (redirect to the default page)
   cancel = (e) => {
     e.preventDefault();
     this.props.history.push("/");
   }
+
 
 
   render() {
@@ -46,6 +50,7 @@ class UserSignIn extends Component {
                 const signin = (e) => {
                   e.preventDefault();
 
+                  // when the user signs in, the signin method from context is called (cf /Context/index.js)
                   context.actions.signin(this.state.emailAddress, this.state.password, true, this.state.prevPage);
                 }
 

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Consumer } from './Context';
 import axios from 'axios';
-
-
 import ReactMarkdown from 'react-markdown';
+import breaks from 'remark-breaks';
 
 
 class CourseDetail extends Component {
@@ -12,7 +11,6 @@ class CourseDetail extends Component {
   constructor() {
     super();
     this.state = {
-      all: [],
       courseId: "",
       description: "",
       estimatedTime: "",
@@ -25,6 +23,8 @@ class CourseDetail extends Component {
     };
   }
 
+
+  // when the component mounts, the course's datas are retrieved
   componentDidMount() {
 
     const id = this.props.match.params.id;
@@ -32,7 +32,6 @@ class CourseDetail extends Component {
     axios.get(`http://localhost:5000/api/courses/${id}`)
       .then(response => {
         this.setState({
-          all: response.data,
           courseId: id,
           description: response.data.description,
           estimatedTime: response.data.estimatedTime,
@@ -51,12 +50,11 @@ class CourseDetail extends Component {
         } else {
           this.props.history.push("/notfound");
         }
-
       })
-
   }
 
 
+  // method to delete a course (the authenticated user has to be the creator of the course)
   deleteCourse = (emailAddress, password) => {
 
     axios.delete(`http://localhost:5000/api/courses/${this.state.courseId}`, {
@@ -87,6 +85,7 @@ class CourseDetail extends Component {
               <div className="grid-100">
                   <Consumer>
                     { context => {
+                      // only the creator of the course can see the Update and Delete buttons
                       if (context.loggedUserId === this.state.userId) {
                         return (
                           <span>
@@ -111,10 +110,12 @@ class CourseDetail extends Component {
               <p>By {this.state.userFullName}</p>
             </div>
             <div id="description" className="course--description">
+
               <ReactMarkdown
                 source={this.state.description}
-                escapeHtml={false}
+                plugins={[breaks]}
               />
+
 
             </div>
           </div>
@@ -129,7 +130,7 @@ class CourseDetail extends Component {
                   <h4>Materials Needed</h4>
                     <ReactMarkdown
                       source={this.state.materialsNeeded}
-                      escapeHtml={false}
+                      plugins={[breaks]}
                     />
                 </li>
               </ul>

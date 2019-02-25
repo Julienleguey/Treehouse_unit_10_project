@@ -3,6 +3,13 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 const UserContext = React.createContext();
 
+/*
+Using the React Context API to store the user credentials
+readyRedirect and prevPage are used to redirect the user after (s)he successfully signed in
+errorMessageSignIn and isErrorSignIn are used to display error messages when the user tries to sign in (cf UserSignIn.js)
+*/
+
+
 class Provider extends Component {
 
   constructor() {
@@ -11,16 +18,17 @@ class Provider extends Component {
       loggedUserId: "",
       emailAddress: "",
       password: "",
-      readyRedirect: false,
-      prevPage: "/",
       firstName: "",
       lastName: "",
+      readyRedirect: false,
+      prevPage: "/",
       errorMessageSignIn: "",
       isErrorSignIn: false
     };
   }
 
-
+  // when mounting, the emailAddress and password of the signed in user are retrieved from localStorage
+  // the user is signed in every time this component mount
   componentDidMount() {
     const emailAddress = localStorage.getItem('emailAddress');
     const password = localStorage.getItem('password');
@@ -29,7 +37,8 @@ class Provider extends Component {
     }
   }
 
-
+  // sign in method
+  // used, after sign in, sign up, and every time this component mount
   signin = (emailAddress, password, readyRedirect, prevPage) => {
     axios.get(`http://localhost:5000/api/users`, {
       auth: {
@@ -41,15 +50,18 @@ class Provider extends Component {
         emailAddress: emailAddress,
         password: password,
         loggedUserId: response.data._id,
-        readyRedirect: readyRedirect,
-        prevPage: prevPage,
         firstName: response.data.firstName,
-        lastName: response.data.lastName
+        lastName: response.data.lastName,
+        readyRedirect: readyRedirect,
+        prevPage: prevPage
       });
+      // storing the user's credentials in localStorage
       localStorage.setItem('emailAddress', this.state.emailAddress);
       localStorage.setItem('password', this.state.password);
       localStorage.setItem('loggedUserId', this.state.loggedUserId);
     }).then( () => {
+      // if the user just signed in (using UserSignIn.j), (s)he is redirected to the previous page
+      // or the page (s)he tried to go to but had to be signed in to do that (i.e. /courses/create)
       if (this.state.readyRedirect) {
         if (this.state.prevPage === "/") {
           this.props.history.goBack();
@@ -61,6 +73,7 @@ class Provider extends Component {
       if (error.response.status === 500) {
         this.props.history.push("/error");
       } else {
+        // used by UserSignIn to display the error messages (incorrect email or password)
         this.setState({
           errorMessageSignIn: error.response.data.message,
           isErrorSignIn: true
@@ -69,7 +82,7 @@ class Provider extends Component {
     });
   }
 
-
+  // signing out method, cleans the user credentials (in state and localStorage)
   signout = () => {
     Promise.resolve()
       .then( () => {
@@ -77,10 +90,10 @@ class Provider extends Component {
         loggedUserId: "",
         emailAddress: "",
         password: "",
-        readyRedirect: false,
-        prevPage: "/",
         firstName: "",
         lastName: "",
+        readyRedirect: false,
+        prevPage: "/",
         errorMessageSignIn: "",
         isErrorSignIn: false
       });

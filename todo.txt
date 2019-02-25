@@ -1,13 +1,1 @@
 todo list:
-
-
-Dans courseDetail et UpdateCourse, on pouvait pas juste passer l'id de course via un props ? (au lieu d'aller emmerder le header ?)
-Je ne crois pas : en passant par props, ça ne marcherait du coup qu'en cliquant sur le bouton d'une leçon, pas en tapant l'url
-
-
-Persists the authenticated user's information (including their password) in the global state. (avec react context api, si c'est possible)
-Impossible without localStorage
-
-
-code comments
-dernier test de toutes les fonctions et on envoie

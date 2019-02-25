@@ -11,6 +11,8 @@ class Courses extends Component {
     };
   }
 
+
+  // retrieving all the courses
   componentDidMount() {
     axios.get(`http://localhost:5000/api/courses`)
       .then(response => {
@@ -25,6 +27,7 @@ class Courses extends Component {
   }
 
 
+  // method to display all the courses
   displayCourses = () => {
     const courses = this.state.courses;
     const coursesDisplayed = courses.map(course =>
@@ -54,9 +57,7 @@ class Courses extends Component {
         </div>
       </div>
     );
-
   }
-
 }
 
 

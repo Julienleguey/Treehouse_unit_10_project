@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Consumer } from './Context';
 
+// Header displayed through all the app
+// contains a button to redirect to the default page and a signin/signout button
 const Header = () => (
   <div className="header">
     <div className="bounds">
@@ -13,7 +15,10 @@ const Header = () => (
             { context.emailAddress !== "" ?
                 <Link className="signout" to="/signout">Sign Out</Link>
                 :
-                <Link className="signout" to="/signin">Sign In</Link>
+                <>
+                  <Link className="signin" to="/signin">Sign In</Link>
+                  <Link className="signup" to="/signup">Sign Up</Link>
+                </>
             }
           </nav>
         )}

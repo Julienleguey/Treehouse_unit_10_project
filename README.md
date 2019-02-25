@@ -21,6 +21,7 @@ Main technologies and dependencies used for this project:
 - axios is used for http request ( https://www.npmjs.com/package/axios )
 - react-router is used to set up the routes
 - React context API is used to manage the global state
+- react-markdown and remark-breaks are used to display the description and the materials needed (https://www.npmjs.com/package/react-markdown & https://github.com/remarkjs/remark-breaks)
 
 
 Actions a user can perform:

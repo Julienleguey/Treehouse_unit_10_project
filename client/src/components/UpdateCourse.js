@@ -27,6 +27,7 @@ class UpdateCourse extends Component {
   }
 
 
+  // when the component mounts, the course's datas are retrieved
   componentDidMount() {
 
     const id = this.props.match.params.id;
@@ -55,6 +56,8 @@ class UpdateCourse extends Component {
   }
 
 
+  // method to update a course (put)
+  // the user has to be authenticated to perform this action
   updateCourse = (e, emailAddress, password) => {
     e.preventDefault();
 
@@ -71,6 +74,7 @@ class UpdateCourse extends Component {
         password: password
       }
     }).then( () => {
+      // when the course is updated, the user is redirected to CourseDetail
       this.props.history.push(`/courses/${this.state.courseId}`);
     }).catch(error => {
       if (error.response.status === 400 ) {
@@ -85,20 +89,27 @@ class UpdateCourse extends Component {
   }
 
 
+  // when the user change the text in the form, the state is updated with the corresponding input
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value});
   }
 
+
+  // method for the cancel button (redirect to the default page)
   cancel = (e) => {
     e.preventDefault();
     this.props.history.push(`/courses/${this.state.courseId}`)
   }
 
+
+  // method to display the error messages while updating a course
   displayErrors = () => {
     const errorsInArray = this.state.errorMessage;
     const errorsDisplayed = errorsInArray.map(error => <li key={ error.toString() } >{ error }</li>);
     return errorsDisplayed;
   }
+
+
 
   render() {
 

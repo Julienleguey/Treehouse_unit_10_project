@@ -21,15 +21,19 @@ class UserSignUp extends Component {
   }
 
 
+  // when the user change the text in the form, the state is updated with the corresponding input
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value});
   }
 
 
+  // method for the cancel button (redirect to the default page)
   cancel = (e) => {
     e.preventDefault();
     this.props.history.push("/");
   }
+
+
 
   render() {
 
@@ -43,6 +47,7 @@ class UserSignUp extends Component {
                 const signup = (e) => {
                   e.preventDefault();
 
+                  //checking that the password contains at least 1 character and that the password and password confirmation match
                   if (this.state.password.length === 0) {
                     this.setState({
                       isError: true,
@@ -54,6 +59,7 @@ class UserSignUp extends Component {
                       errorMessage: "Password and Confirm Password do not match!"
                     });
                   } else {
+                      // if the passwords requirements are met, creating a new user
                       axios.post(`http://localhost:5000/api/users`, {
                         firstName: this.state.firstName,
                         lastName: this.state.lastName,
@@ -65,6 +71,9 @@ class UserSignUp extends Component {
                         if (error.response.status === 500 ) {
                           this.props.history.push("/error");
                         } else {
+                          // displaying error messages sent by the server while creating a new user
+                          // firstName, lastName and emailAddress are required
+                          // the server also checks that the emailAddress is not already used and it's a correct emailAddress
                           this.setState({
                             isError: true,
                             errorMessage: error.response.data.message
@@ -74,6 +83,7 @@ class UserSignUp extends Component {
                     }
                   }
 
+                  // function to display the error messages
                   const displayErrors = () => {
                     const errorsInArray = this.state.errorMessage;
                     let errorsDisplayed = "";
